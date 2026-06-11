@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 load_dotenv()
 
 from chess_api import get_recent_games
-from analyzer import analyze_games
+from analyzer import analyze_games, analyze_single_game
 from scheduler import start_scheduler
 
 app = Flask(__name__)
@@ -139,6 +139,7 @@ def analyze():
         "feedback": feedback,
         "games_analyzed": len(games),
         "username": username,
+        "first_pgn": games[0].get("pgn", "") if games else "",
     })
 
 
@@ -189,6 +190,68 @@ def unsubscribe_page():
                 (username, email),
             )
     return "<p style='font-family:sans-serif;text-align:center;padding:40px'>Unsubscribed. <a href='/'>Back to Chess Teacher</a></p>"
+
+
+@app.route("/api/games/<username>")
+def list_games(username):
+    username = username.strip().lower()
+    try:
+        games = get_recent_games(username, 20)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
+
+    from datetime import datetime as dt
+    result_map = {
+        "win": "Won", "lose": "Lost", "draw": "Drew",
+        "agreed": "Drew", "repetition": "Drew", "stalemate": "Drew",
+        "insufficient": "Drew", "timeout": "Timeout",
+        "resigned": "Resigned", "checkmated": "Checkmated",
+    }
+    items = []
+    for i, g in enumerate(games):
+        white = g.get("white", {})
+        black = g.get("black", {})
+        is_white = white.get("username", "").lower() == username
+        player = white if is_white else black
+        opponent = black if is_white else white
+        ts = g.get("end_time", 0)
+        items.append({
+            "index": i,
+            "pgn": g.get("pgn", ""),
+            "time_class": g.get("time_class", ""),
+            "time_control": g.get("time_control", ""),
+            "color": "White" if is_white else "Black",
+            "rating": player.get("rating", "?"),
+            "opponent": opponent.get("username", "?"),
+            "opponent_rating": opponent.get("rating", "?"),
+            "result": result_map.get(player.get("result", ""), "?"),
+            "date": dt.fromtimestamp(ts).strftime("%d %b %Y") if ts else "",
+        })
+    return jsonify({"games": items, "username": username})
+
+
+@app.route("/api/analyze-game", methods=["POST"])
+def analyze_game_route():
+    data = request.json or {}
+    username = data.get("username", "").strip().lower()
+    pgn = data.get("pgn", "").strip()
+    move_number = data.get("move_number")
+    fen = data.get("fen", "")
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+
+    if not username or not pgn:
+        return jsonify({"error": "Username and PGN required"}), 400
+
+    if get_monthly_spend_usd() >= MONTHLY_BUDGET_USD:
+        return jsonify({"error": "Monthly budget reached. Try again next month."}), 429
+
+    if username != OWNER_USERNAME.lower():
+        if get_monthly_usage_count(username) >= FREE_MONTHLY_LIMIT:
+            return jsonify({"error": f"{FREE_MONTHLY_LIMIT} free analyses used this month."}), 429
+
+    feedback, tok_in, tok_out, cost = analyze_single_game(pgn, username, move_number, fen)
+    log_usage(username, ip, 1, f"game_review:{move_number}", tok_in, tok_out, cost)
+    return jsonify({"feedback": feedback})
 
 
 @app.route("/admin")

@@ -48,3 +48,47 @@ Be specific (reference actual moves), honest, and encouraging. Keep it readable 
     cost_usd = (input_tokens * 0.0000008) + (output_tokens * 0.000004)
 
     return response.content[0].text, input_tokens, output_tokens, cost_usd
+
+
+def analyze_single_game(pgn: str, username: str, move_number=None, fen: str = "") -> tuple:
+    """Analyze a specific game position or full game for the move-by-move review."""
+    if move_number is not None:
+        prompt = f"""You are a chess coach. {username} has paused to study this position (move {move_number}).
+
+Game PGN: {pgn[:3000]}
+Current FEN: {fen}
+
+Give focused coaching in 2-3 short paragraphs:
+1. What are the key features of this position — threats, weak squares, piece activity?
+2. Was the last move good or questionable? What was the idea?
+3. What should {username} consider doing next?
+
+Name specific squares and pieces. Be concise and direct."""
+    else:
+        prompt = f"""You are a chess coach reviewing {username}'s complete game.
+
+PGN: {pgn[:4000]}
+
+## Opening
+Comment on the opening choices and any early inaccuracies.
+
+## Critical Moments
+The 2-3 most important positions. Give the move number and explain what happened and what was better.
+
+## Endgame
+Brief comment if relevant.
+
+## Key Lesson
+One concrete thing to take from this game.
+
+Reference specific moves and be direct."""
+
+    response = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=600 if move_number is not None else 1400,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    tok_in = response.usage.input_tokens
+    tok_out = response.usage.output_tokens
+    cost = (tok_in * 0.0000008) + (tok_out * 0.000004)
+    return response.content[0].text, tok_in, tok_out, cost

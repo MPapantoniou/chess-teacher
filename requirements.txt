@@ -1,0 +1,9 @@
+flask
+flask-cors
+gunicorn
+anthropic
+resend
+apscheduler
+python-dotenv
+requests
+pytz

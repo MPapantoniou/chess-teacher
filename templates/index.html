@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Teacher</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #1a1a1a;
+      color: #e8e4dc;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #111;
+      border-bottom: 2px solid #2c5f2e;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: #e8e4dc;
+      letter-spacing: 0.5px;
+    }
+    header .piece { font-size: 2rem; line-height: 1; }
+    header .tagline {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: #888;
+      font-family: sans-serif;
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .card {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      font-family: sans-serif;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="email"], textarea, select {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #e8e4dc;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      padding: 10px 14px;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, input[type="email"]:focus,
+    textarea:focus, select:focus {
+      outline: none;
+      border-color: #2c5f2e;
+    }
+    textarea { resize: vertical; min-height: 70px; }
+    select { cursor: pointer; }
+
+    .row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .row > * { flex: 1; }
+    .field { margin-bottom: 16px; }
+
+    .count-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .count-row input[type="range"] {
+      flex: 1;
+      accent-color: #2c5f2e;
+      cursor: pointer;
+    }
+    .count-badge {
+      background: #2c5f2e;
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 20px;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      padding: 12px 28px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary {
+      background: #2c5f2e;
+      color: #fff;
+      width: 100%;
+      font-size: 1.05rem;
+    }
+    .btn-primary:hover:not(:disabled) { background: #347336; }
+
+    .btn-secondary {
+      background: #333;
+      color: #e8e4dc;
+      font-size: 0.9rem;
+    }
+    .btn-secondary:hover:not(:disabled) { background: #444; }
+
+    .btn-danger {
+      background: #5f2c2c;
+      color: #e8e4dc;
+      font-size: 0.9rem;
+    }
+    .btn-danger:hover:not(:disabled) { background: #7a3535; }
+
+    /* Results */
+    #result-card { display: none; }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #333;
+    }
+    .result-header h2 { font-size: 1.1rem; color: #aaa; font-family: sans-serif; }
+    .result-badge {
+      background: #1a3a1c;
+      color: #4caf50;
+      font-family: sans-serif;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    #feedback-content {
+      line-height: 1.75;
+      color: #ddd8ce;
+    }
+    #feedback-content h2 { color: #4caf50; font-size: 1rem; margin: 20px 0 6px; font-family: sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
+    #feedback-content h3 { color: #4caf50; font-size: 0.95rem; margin: 18px 0 6px; font-family: sans-serif; }
+    #feedback-content p { margin-bottom: 10px; }
+    #feedback-content strong { color: #e8e4dc; }
+    #feedback-content ul, #feedback-content ol { padding-left: 20px; margin-bottom: 10px; }
+    #feedback-content li { margin-bottom: 4px; }
+    #feedback-content code {
+      background: #1a1a1a;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Email section */
+    .email-section { border-top: 1px solid #333; margin-top: 24px; padding-top: 20px; }
+    .email-toggle-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+    .email-toggle-header h3 { font-size: 0.9rem; color: #888; font-family: sans-serif; }
+    .chevron { color: #666; transition: transform 0.2s; font-size: 0.8rem; }
+    .chevron.open { transform: rotate(180deg); }
+    .email-body { display: none; margin-top: 16px; }
+    .email-body.visible { display: block; }
+
+    .sub-status {
+      font-family: sans-serif;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    .sub-status.active { background: #1a3a1c; color: #4caf50; }
+    .sub-status.inactive { display: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #2c5f2e;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: sans-serif;
+      font-size: 0.9rem;
+      transition: transform 0.3s;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    #toast.error { background: #5f2c2c; }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 500px) {
+      .row { flex-direction: column; gap: 0; }
+      header .tagline { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="piece">♟</span>
+  <h1>Chess Teacher</h1>
+  <span class="tagline">Powered by Chess.com · Claude AI</span>
+</header>
+
+<main>
+
+  <!-- Analyze card -->
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label for="username">Chess.com Username</label>
+        <input type="text" id="username" placeholder="e.g. zingpap" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Games to review: <span id="count-label">3</span></label>
+      <div class="count-row">
+        <input type="range" id="count" min="1" max="10" value="3">
+        <span class="count-badge" id="count-badge">3</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="question">Specific question (optional)</label>
+      <textarea id="question" placeholder="e.g. What am I doing wrong in the endgame? How is my opening?"></textarea>
+    </div>
+
+    <button class="btn-primary" id="analyze-btn" onclick="analyze()">
+      Analyse my games
+    </button>
+
+    <!-- Email subscription (nested in same card) -->
+    <div class="email-section">
+      <div class="email-toggle-header" onclick="toggleEmail()">
+        <h3>📬 Daily email feedback</h3>
+        <span class="chevron" id="chevron">▼</span>
+      </div>
+      <div class="email-body" id="email-body">
+        <div class="sub-status inactive" id="sub-status"></div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="email">Your email</label>
+          <input type="email" id="email" placeholder="you@example.com">
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="email-games">Games per email</label>
+            <select id="email-games">
+              <option value="1">1 game</option>
+              <option value="2">2 games</option>
+              <option value="3">3 games</option>
+              <option value="5">5 games</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="email-mode">Scope</label>
+            <select id="email-mode">
+              <option value="recent">Most recent games</option>
+              <option value="today">Today's games only</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <button class="btn-secondary" onclick="subscribe()" id="sub-btn">Subscribe</button>
+          <button class="btn-danger" onclick="unsubscribe()" id="unsub-btn" style="display:none">Unsubscribe</button>
+        </div>
+
+        <p style="font-size:0.75rem;color:#666;font-family:sans-serif;margin-top:10px">
+          Emails send at 8am UTC daily. Requires server to be running or hosted.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result card -->
+  <div class="card" id="result-card">
+    <div class="result-header">
+      <h2 id="result-title">Analysis</h2>
+      <span class="result-badge" id="result-badge"></span>
+    </div>
+    <div id="feedback-content"></div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+  const $ = id => document.getElementById(id);
+
+  // Persist username in localStorage
+  window.onload = () => {
+    const saved = localStorage.getItem('ct_username');
+    if (saved) $('username').value = saved;
+    const savedEmail = localStorage.getItem('ct_email');
+    if (savedEmail) $('email').value = savedEmail;
+    checkSubStatus();
+  };
+
+  $('username').addEventListener('input', () => {
+    localStorage.setItem('ct_username', $('username').value.trim());
+    checkSubStatus();
+  });
+
+  $('email').addEventListener('input', () => {
+    localStorage.setItem('ct_email', $('email').value.trim());
+  });
+
+  // Count slider
+  $('count').addEventListener('input', function() {
+    $('count-label').textContent = this.value;
+    $('count-badge').textContent = this.value;
+  });
+
+  function toggleEmail() {
+    const body = $('email-body');
+    const chevron = $('chevron');
+    body.classList.toggle('visible');
+    chevron.classList.toggle('open');
+  }
+
+  function checkSubStatus() {
+    const username = $('username').value.trim();
+    const email = $('email').value.trim();
+    const key = `ct_sub_${username}_${email}`;
+    const subbed = localStorage.getItem(key);
+
+    const status = $('sub-status');
+    const subBtn = $('sub-btn');
+    const unsubBtn = $('unsub-btn');
+
+    if (subbed && username && email) {
+      status.className = 'sub-status active';
+      status.textContent = `✓ Subscribed — daily feedback to ${email}`;
+      subBtn.style.display = 'none';
+      unsubBtn.style.display = '';
+    } else {
+      status.className = 'sub-status inactive';
+      subBtn.style.display = '';
+      unsubBtn.style.display = 'none';
+    }
+  }
+
+  async function analyze() {
+    const username = $('username').value.trim();
+    if (!username) { showToast('Enter your Chess.com username', true); return; }
+
+    const btn = $('analyze-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Fetching games…';
+    $('result-card').style.display = 'none';
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          count: parseInt($('count').value),
+          question: $('question').value.trim(),
+        }),
+      });
+
+      btn.innerHTML = '<span class="spinner"></span>Analysing…';
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast(data.error || 'Something went wrong', true);
+        return;
+      }
+
+      $('result-title').textContent = `Feedback for ${data.username}`;
+      $('result-badge').textContent = `${data.games_analyzed} game${data.games_analyzed > 1 ? 's' : ''} reviewed`;
+      $('feedback-content').innerHTML = marked.parse(data.feedback);
+      $('result-card').style.display = 'block';
+      $('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (e) {
+      showToast('Network error — is the server running?', true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Analyse my games';
+    }
+  }
+
+  async function subscribe() {
+    const username = $('username').value.trim();
+    const email = $('email').value.trim();
+    if (!username) { showToast('Enter your Chess.com username first', true); return; }
+    if (!email) { showToast('Enter your email address', true); return; }
+
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        email,
+        games: parseInt($('email-games').value),
+        mode: $('email-mode').value,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem(`ct_sub_${username}_${email}`, '1');
+      checkSubStatus();
+      showToast(data.message);
+    } else {
+      showToast(data.error || 'Subscription failed', true);
+    }
+  }
+
+  async function unsubscribe() {
+    const username = $('username').value.trim();
+    const email = $('email').value.trim();
+
+    const res = await fetch('/api/unsubscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.removeItem(`ct_sub_${username}_${email}`);
+      checkSubStatus();
+      showToast('Unsubscribed');
+    } else {
+      showToast(data.error || 'Failed', true);
+    }
+  }
+
+  function showToast(msg, isError = false) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = isError ? 'error' : '';
+    t.offsetHeight; // reflow
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>

@@ -10,31 +10,31 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Georgia, serif; background: #1a1a1a; color: #e8e4dc; min-height: 100vh; }
 
+    /* ── Header ── */
     header { background: #111; border-bottom: 2px solid #2c5f2e; padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
     header h1 { font-size: 1.3rem; }
     header .piece { font-size: 1.8rem; line-height: 1; }
-    header .tagline { margin-left: auto; font-size: 0.75rem; color: #666; font-family: sans-serif; }
 
-    /* Search bar */
-    .search-bar { padding: 12px 20px; background: #1e1e1e; border-bottom: 1px solid #2a2a2a; display: flex; gap: 10px; align-items: center; }
-    .search-bar input { flex: 1; max-width: 320px; background: #111; border: 1px solid #444; border-radius: 6px; color: #e8e4dc; font-family: Georgia, serif; font-size: 0.95rem; padding: 8px 12px; }
+    /* ── Search bar ── */
+    .search-bar { padding: 12px 20px; background: #1e1e1e; border-bottom: 1px solid #2a2a2a; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-bar input { flex: 1; max-width: 320px; min-width: 180px; background: #111; border: 1px solid #444; border-radius: 6px; color: #e8e4dc; font-family: Georgia, serif; font-size: 0.95rem; padding: 8px 12px; }
     .search-bar input:focus { outline: none; border-color: #2c5f2e; }
     .search-bar button { background: #2c5f2e; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-family: Georgia, serif; font-size: 0.95rem; cursor: pointer; }
     .search-bar button:hover { background: #347336; }
+    #search-status { font-family: sans-serif; font-size: 0.8rem; color: #4caf50; }
 
-    /* Mode tabs */
-    .mode-tabs { display: flex; background: #161616; border-bottom: 1px solid #2a2a2a; }
+    /* ── Mode tabs (hidden until username is set) ── */
+    .mode-tabs { display: none; background: #161616; border-bottom: 1px solid #2a2a2a; }
     .mode-tab { padding: 12px 28px; font-family: sans-serif; font-size: 0.85rem; color: #888; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; letter-spacing: 0.5px; text-transform: uppercase; }
     .mode-tab:hover { color: #ccc; }
     .mode-tab.active { color: #4caf50; border-bottom-color: #4caf50; }
 
-    /* Shared helpers */
+    /* ── Shared helpers ── */
     label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #888; font-family: sans-serif; margin-bottom: 5px; }
     input[type="text"], input[type="email"], textarea, select { width: 100%; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #e8e4dc; font-family: Georgia, serif; font-size: 0.95rem; padding: 9px 13px; }
     input[type="text"]:focus, textarea:focus { outline: none; border-color: #2c5f2e; }
     textarea { resize: vertical; min-height: 65px; }
     .field { margin-bottom: 14px; }
-
     button { cursor: pointer; border: none; border-radius: 6px; font-family: Georgia, serif; transition: opacity 0.15s; }
     button:disabled { opacity: 0.45; cursor: not-allowed; }
     .btn-primary { background: #2c5f2e; color: #fff; padding: 11px 24px; font-size: 1rem; width: 100%; }
@@ -44,13 +44,28 @@
     .btn-green { background: #1a3a1c; color: #4caf50; border: 1px solid #2c5f2e; padding: 8px 16px; font-size: 0.85rem; font-family: sans-serif; }
     .btn-green:hover:not(:disabled) { background: #243d26; }
 
-    /* ── GENERAL ANALYSIS PANEL ── */
-    #panel-general { max-width: 760px; margin: 0 auto; padding: 24px 20px; }
+    /* ── Welcome ── */
+    #panel-welcome { display: none; text-align: center; padding: 80px 20px; }
+    #panel-welcome h2 { color: #4caf50; font-size: 1.4rem; margin-bottom: 12px; }
+    #panel-welcome p { color: #666; font-family: sans-serif; font-size: 0.9rem; line-height: 1.7; }
+
+    /* ── GENERAL ANALYSIS ── */
+    #panel-general { display: none; }
+    .gen-inner { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
     .count-row { display: flex; align-items: center; gap: 12px; }
     .count-row input[type="range"] { flex: 1; accent-color: #2c5f2e; }
     .count-badge { background: #2c5f2e; color: #fff; font-family: sans-serif; font-size: 0.8rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; min-width: 28px; text-align: center; }
 
-    .result-card { background: #242424; border: 1px solid #333; border-radius: 8px; padding: 22px; margin-top: 18px; display: none; }
+    /* Result: side-by-side on desktop */
+    .gen-result-area { display: none; margin-top: 22px; }
+    .gen-result-inner { display: flex; flex-direction: column; gap: 20px; }
+    @media (min-width: 860px) {
+      .gen-result-inner { flex-direction: row; align-items: flex-start; }
+      .gen-feedback-col { flex: 1; min-width: 0; }
+      .gen-board-col { flex-shrink: 0; width: 396px; }
+    }
+
+    .result-card { background: #242424; border: 1px solid #333; border-radius: 8px; padding: 22px; }
     .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #333; }
     .result-header h2 { font-size: 1rem; color: #aaa; font-family: sans-serif; }
     .result-badge { background: #1a3a1c; color: #4caf50; font-family: sans-serif; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; }
@@ -60,82 +75,11 @@
     #feedback-content li { margin-bottom: 4px; color: #ddd8ce; line-height: 1.6; }
     #feedback-content strong { color: #e8e4dc; }
 
-    /* ── REVIEW PANEL ── */
-    #panel-review { display: none; height: calc(100vh - 112px); }
-    .review-layout { display: flex; height: 100%; }
+    .board-card { background: #242424; border: 1px solid #333; border-radius: 8px; padding: 16px; }
+    .board-card-title { font-family: sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 12px; }
 
-    /* Game list */
-    .game-list-panel { width: 270px; min-width: 270px; border-right: 1px solid #2a2a2a; overflow-y: auto; background: #161616; }
-    .game-list-header { padding: 12px 14px 8px; font-family: sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #666; border-bottom: 1px solid #222; }
-    .game-item { padding: 10px 14px; border-bottom: 1px solid #1f1f1f; cursor: pointer; transition: background 0.1s; }
-    .game-item:hover { background: #1e1e1e; }
-    .game-item.selected { background: #1a2a1c; border-left: 3px solid #2c5f2e; }
-    .game-item .gi-result { font-size: 0.75rem; font-family: sans-serif; font-weight: bold; padding: 2px 7px; border-radius: 3px; display: inline-block; margin-bottom: 4px; }
-    .gi-won { background: #1a3a1c; color: #4caf50; }
-    .gi-lost { background: #3a1a1a; color: #f44336; }
-    .gi-drew { background: #2a2a1a; color: #ff9800; }
-    .gi-other { background: #222; color: #888; }
-    .game-item .gi-opponent { font-size: 0.9rem; color: #ddd; }
-    .game-item .gi-meta { font-size: 0.75rem; color: #666; font-family: sans-serif; margin-top: 2px; }
-    .game-list-empty { padding: 20px 14px; font-family: sans-serif; font-size: 0.82rem; color: #555; line-height: 1.5; }
-
-    /* Board panel */
-    .board-panel { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-    .board-empty { color: #555; font-family: sans-serif; font-size: 0.9rem; margin-top: 80px; }
-
-    /* Game viewer */
-    #game-viewer { width: 100%; max-width: 520px; }
-    .gv-header { font-family: sans-serif; font-size: 0.82rem; color: #888; margin-bottom: 12px; text-align: center; }
-    .gv-header strong { color: #ccc; }
-
-    /* Chess board */
-    .board-outer { display: flex; flex-direction: column; align-items: flex-start; margin: 0 auto; width: fit-content; }
-    .board-with-ranks { display: flex; align-items: stretch; }
-    .rank-labels { display: flex; flex-direction: column; width: 18px; justify-content: space-around; padding: 1px 0; }
-    .rank-labels span { font-size: 10px; color: #666; font-family: sans-serif; text-align: center; height: 44px; display: flex; align-items: center; justify-content: center; }
-    .chess-board { display: grid; grid-template-columns: repeat(8, 44px); grid-template-rows: repeat(8, 44px); border: 2px solid #333; }
-    .sq { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; position: relative; }
-    .sq-light { background: #f0d9b5; }
-    .sq-dark { background: #b58863; }
-    .sq-from { background: #cdd26a !important; }
-    .sq-to { background: #aaa23a !important; }
-    .piece { font-size: 30px; line-height: 1; user-select: none; }
-    .piece-white { color: #fff; text-shadow: 0 0 4px #000, 0 1px 4px #000; }
-    .piece-black { color: #111; text-shadow: 0 0 3px rgba(255,255,255,0.2); }
-    .file-labels { display: flex; margin-left: 18px; }
-    .file-labels span { width: 44px; text-align: center; font-size: 10px; color: #666; font-family: sans-serif; padding-top: 3px; }
-
-    /* Move navigation */
-    .move-nav { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 12px 0 8px; }
-    .move-nav button { background: #2a2a2a; color: #ccc; border: none; border-radius: 4px; padding: 6px 12px; font-size: 0.9rem; cursor: pointer; }
-    .move-nav button:hover:not(:disabled) { background: #333; }
-    .move-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
-    #move-label { font-family: sans-serif; font-size: 0.82rem; color: #aaa; min-width: 110px; text-align: center; }
-
-    /* Move list */
-    .move-list-wrap { width: 100%; overflow-x: auto; margin-bottom: 12px; }
-    .move-list { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 0; }
-    .move-chip { font-family: sans-serif; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; cursor: pointer; background: #222; color: #888; border: 1px solid transparent; white-space: nowrap; }
-    .move-chip:hover { background: #2a2a2a; color: #ccc; }
-    .move-chip.current { background: #2c5f2e; color: #fff; }
-    .move-chip.start-chip { color: #555; }
-
-    /* Analysis section */
-    .analysis-btns { display: flex; gap: 8px; margin-bottom: 14px; }
-    #game-analysis { margin-top: 4px; }
-    #game-analysis .ai-block { background: #1e2a1e; border: 1px solid #2c5f2e; border-radius: 8px; padding: 16px; }
-    #game-analysis h2, #game-analysis h3 { color: #4caf50; font-family: sans-serif; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 14px 0 5px; }
-    #game-analysis p { margin-bottom: 8px; line-height: 1.7; color: #ddd8ce; }
-    #game-analysis ul, #game-analysis ol { padding-left: 18px; margin-bottom: 8px; }
-    #game-analysis li { margin-bottom: 4px; line-height: 1.6; color: #ddd8ce; }
-    #game-analysis strong { color: #e8e4dc; }
-
-    /* Spinner */
-    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Email section (general panel) */
-    .email-section { border-top: 1px solid #2a2a2a; margin-top: 20px; padding-top: 16px; }
+    /* Email section */
+    .email-section { border-top: 1px solid #2a2a2a; margin-top: 24px; padding-top: 16px; }
     .email-toggle { display: flex; justify-content: space-between; cursor: pointer; }
     .email-toggle h3 { font-size: 0.85rem; color: #666; font-family: sans-serif; }
     .email-body { display: none; margin-top: 14px; }
@@ -145,22 +89,107 @@
     .sub-status { font-family: sans-serif; font-size: 0.82rem; padding: 7px 12px; border-radius: 6px; margin-bottom: 10px; background: #1a3a1c; color: #4caf50; display: none; }
     .sub-status.show { display: block; }
 
-    /* Toast */
+    /* ── GAME REVIEW ── */
+    #panel-review { display: none; }
+    .review-layout { display: flex; height: calc(100vh - 152px); }
+
+    /* Game list */
+    .game-list-panel { width: 248px; min-width: 248px; border-right: 1px solid #2a2a2a; overflow-y: auto; background: #161616; flex-shrink: 0; }
+    .game-list-header { padding: 12px 14px 8px; font-family: sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #666; border-bottom: 1px solid #222; }
+    .game-item { padding: 10px 12px; border-bottom: 1px solid #1f1f1f; cursor: pointer; transition: background 0.1s; display: flex; gap: 9px; align-items: flex-start; }
+    .game-item:hover { background: #1e1e1e; }
+    .game-item.selected { background: #1a2a1c; border-left: 3px solid #2c5f2e; padding-left: 9px; }
+    .gi-avatar { width: 30px; height: 30px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #2a2a2a; display: flex; align-items: center; justify-content: center; margin-top: 2px; font-size: 14px; color: #555; }
+    .gi-avatar img { width: 30px; height: 30px; object-fit: cover; border-radius: 50%; display: block; }
+    .gi-info { flex: 1; min-width: 0; }
+    .gi-result { font-size: 0.72rem; font-family: sans-serif; font-weight: bold; padding: 2px 7px; border-radius: 3px; display: inline-block; margin-bottom: 4px; }
+    .gi-won { background: #1a3a1c; color: #4caf50; }
+    .gi-lost { background: #3a1a1a; color: #f44336; }
+    .gi-drew { background: #2a2a1a; color: #ff9800; }
+    .gi-other { background: #222; color: #888; }
+    .gi-opponent { font-size: 0.87rem; color: #ddd; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gi-meta { font-size: 0.72rem; color: #666; font-family: sans-serif; margin-top: 2px; }
+    .game-list-empty { padding: 20px 14px; font-family: sans-serif; font-size: 0.82rem; color: #555; line-height: 1.5; }
+
+    /* Viewer area: board | analysis side-by-side on desktop */
+    .game-viewer-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .board-empty { color: #555; font-family: sans-serif; font-size: 0.9rem; padding: 60px 20px; text-align: center; }
+
+    @media (min-width: 860px) {
+      .game-viewer-area { flex-direction: row; }
+      .board-col-review { flex-shrink: 0; height: 100%; overflow-y: auto; padding: 20px; border-right: 1px solid #222; }
+      .analysis-col-review { flex: 1; min-width: 0; height: 100%; overflow-y: auto; padding: 20px; }
+    }
+    @media (max-width: 859px) {
+      .game-viewer-area { overflow-y: auto; }
+      .board-col-review { padding: 16px; }
+      .analysis-col-review { padding: 0 16px 16px; }
+    }
+
+    /* ── Chess board ── */
+    .board-outer { display: flex; flex-direction: column; align-items: flex-start; width: fit-content; }
+    .board-with-ranks { display: flex; align-items: stretch; }
+    .rank-labels { display: flex; flex-direction: column; width: 18px; padding: 1px 0; }
+    .rank-labels span { font-size: 10px; color: #666; font-family: sans-serif; text-align: center; height: 46px; display: flex; align-items: center; justify-content: center; }
+    .chess-board { display: grid; grid-template-columns: repeat(8, 46px); grid-template-rows: repeat(8, 46px); border: 2px solid #333; }
+    .sq { width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; }
+    .sq-light { background: #f0d9b5; }
+    .sq-dark { background: #b58863; }
+    .sq-from { background: #cdd26a !important; }
+    .sq-to { background: #aaa23a !important; }
+    .sq img { width: 38px; height: 38px; display: block; pointer-events: none; user-select: none; }
+    .piece { font-size: 30px; line-height: 1; user-select: none; pointer-events: none; }
+    .piece-white { color: #fff; text-shadow: 0 0 4px #000, 0 1px 4px #000; }
+    .piece-black { color: #111; text-shadow: 0 0 3px rgba(255,255,255,0.2); }
+    .file-labels { display: flex; margin-left: 18px; }
+    .file-labels span { width: 46px; text-align: center; font-size: 10px; color: #666; font-family: sans-serif; padding-top: 3px; }
+
+    /* ── Move navigation ── */
+    .move-nav { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0 6px; }
+    .move-nav button { background: #2a2a2a; color: #ccc; border: none; border-radius: 4px; padding: 6px 12px; font-size: 0.9rem; cursor: pointer; font-family: sans-serif; }
+    .move-nav button:hover:not(:disabled) { background: #333; }
+    .move-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .move-label { font-family: sans-serif; font-size: 0.85rem; color: #aaa; min-width: 110px; text-align: center; font-weight: bold; }
+
+    /* ── Move list ── */
+    .move-list-wrap { width: 100%; overflow-x: auto; margin-bottom: 10px; }
+    .move-list { display: flex; flex-wrap: wrap; gap: 3px; padding: 6px 0; }
+    .move-chip { font-family: sans-serif; font-size: 0.75rem; padding: 3px 7px; border-radius: 4px; cursor: pointer; background: #222; color: #888; white-space: nowrap; }
+    .move-chip:hover { background: #2a2a2a; color: #ccc; }
+    .move-chip.current { background: #2c5f2e; color: #fff; }
+    .move-chip.start-chip { color: #555; }
+
+    /* ── Game header ── */
+    .gv-header { font-family: sans-serif; font-size: 0.82rem; color: #888; margin-bottom: 12px; line-height: 1.5; }
+    .gv-header strong { color: #ccc; }
+    .flip-badge { font-size: 0.68rem; background: #1a2a3a; color: #5b9dd9; border-radius: 3px; padding: 1px 5px; margin-left: 6px; vertical-align: middle; }
+
+    /* ── Analysis section ── */
+    .analysis-btns { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .ai-block { background: #1e2a1e; border: 1px solid #2c5f2e; border-radius: 8px; padding: 16px; }
+    .ai-block h2, .ai-block h3 { color: #4caf50; font-family: sans-serif; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 14px 0 5px; }
+    .ai-block p { margin-bottom: 8px; line-height: 1.7; color: #ddd8ce; }
+    .ai-block ul, .ai-block ol { padding-left: 18px; margin-bottom: 8px; }
+    .ai-block li { margin-bottom: 4px; line-height: 1.6; color: #ddd8ce; }
+    .ai-block strong { color: #e8e4dc; }
+
+    /* ── Spinner ── */
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast ── */
     #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #2c5f2e; color: #fff; padding: 10px 22px; border-radius: 8px; font-family: sans-serif; font-size: 0.85rem; transition: transform 0.25s; z-index: 999; }
     #toast.error { background: #5f2c2c; }
     #toast.show { transform: translateX(-50%) translateY(0); }
 
-    /* Board in general panel */
-    #general-board-section { margin-top: 20px; border-top: 1px solid #333; padding-top: 16px; display: none; }
-    #general-board-section .section-title { font-family: sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 12px; }
-
     @media (max-width: 600px) {
-      .game-list-panel { width: 200px; min-width: 200px; }
-      .chess-board { grid-template-columns: repeat(8, 36px); grid-template-rows: repeat(8, 36px); }
-      .sq { width: 36px; height: 36px; }
-      .piece { font-size: 24px; }
-      .rank-labels span { height: 36px; }
-      .file-labels span { width: 36px; }
+      .game-list-panel { width: 160px; min-width: 160px; }
+      .chess-board { grid-template-columns: repeat(8, 37px); grid-template-rows: repeat(8, 37px); }
+      .sq { width: 37px; height: 37px; }
+      .sq img { width: 30px; height: 30px; }
+      .piece { font-size: 22px; }
+      .rank-labels span { height: 37px; }
+      .file-labels span { width: 37px; }
     }
   </style>
 </head>
@@ -169,99 +198,122 @@
 <header>
   <span class="piece">♟</span>
   <h1>Chess Teacher</h1>
-  <span class="tagline">Chess.com · Claude AI</span>
 </header>
 
-<!-- Username search (always visible) -->
+<!-- Username search -->
 <div class="search-bar">
-  <input type="text" id="username" placeholder="Chess.com username…" autocomplete="off">
+  <input type="text" id="username" placeholder="Chess.com username…" autocomplete="off" spellcheck="false">
   <button onclick="searchUser()">Search</button>
-  <span id="search-status" style="font-family:sans-serif;font-size:0.8rem;color:#666"></span>
+  <span id="search-status"></span>
 </div>
 
-<!-- Mode tabs -->
-<div class="mode-tabs">
+<!-- Mode tabs — hidden until a username is set -->
+<div class="mode-tabs" id="mode-tabs">
   <button class="mode-tab active" id="tab-general" onclick="setMode('general')">General Analysis</button>
   <button class="mode-tab" id="tab-review" onclick="setMode('review')">Game Review</button>
 </div>
 
-<!-- ═══════════════ GENERAL ANALYSIS ═══════════════ -->
+<!-- Welcome (shown when no saved username) -->
+<div id="panel-welcome">
+  <h2>♟ Welcome to Chess Teacher</h2>
+  <p>Enter your Chess.com username above to get started.<br>Get AI coaching on your recent games, or review them move by move.</p>
+</div>
+
+<!-- ══════════════ GENERAL ANALYSIS ══════════════ -->
 <div id="panel-general">
-  <div class="field">
-    <label>Games to review: <span id="count-val">3</span></label>
-    <div class="count-row">
-      <input type="range" id="count" min="1" max="10" value="3">
-      <span class="count-badge" id="count-badge">3</span>
-    </div>
-  </div>
-  <div class="field">
-    <label>Specific question (optional)</label>
-    <textarea id="question" placeholder="e.g. What am I doing wrong in the endgame?"></textarea>
-  </div>
-  <button class="btn-primary" id="analyze-btn" onclick="analyzeGeneral()">Analyse my games</button>
-
-  <!-- Result -->
-  <div class="result-card" id="result-card">
-    <div class="result-header">
-      <h2 id="result-title">Feedback</h2>
-      <span class="result-badge" id="result-badge"></span>
-    </div>
-    <div id="feedback-content"></div>
-  </div>
-
-  <!-- Board below general analysis -->
-  <div id="general-board-section">
-    <div class="section-title">Navigate the game while reading feedback ↑</div>
-    <div id="general-board-outer"></div>
-    <div class="move-nav" style="margin-top:10px">
-      <button onclick="genGoStart()">|◄</button>
-      <button onclick="genPrev()">◄</button>
-      <span id="gen-move-label" style="font-family:sans-serif;font-size:0.82rem;color:#aaa;min-width:110px;text-align:center">Start</span>
-      <button onclick="genNext()">►</button>
-      <button onclick="genGoEnd()">►|</button>
-    </div>
-    <div class="move-list-wrap"><div class="move-list" id="gen-move-list"></div></div>
-  </div>
-
-  <!-- Email subscription -->
-  <div class="email-section">
-    <div class="email-toggle" onclick="toggleEmail()">
-      <h3>📬 Daily email feedback</h3>
-      <span style="color:#555;font-size:0.8rem">▼</span>
-    </div>
-    <div class="email-body" id="email-body">
-      <div class="sub-status" id="sub-status"></div>
-      <div class="field" style="margin-top:10px">
-        <label>Your email</label>
-        <input type="email" id="email" placeholder="you@example.com">
+  <div class="gen-inner">
+    <div class="field">
+      <label>Games to review: <span id="count-val">3</span></label>
+      <div class="count-row">
+        <input type="range" id="count" min="1" max="10" value="3">
+        <span class="count-badge" id="count-badge">3</span>
       </div>
-      <div class="row">
-        <div class="field">
-          <label>Games per email</label>
-          <select id="email-games">
-            <option value="1">1 game</option>
-            <option value="2">2 games</option>
-            <option value="3">3 games</option>
-          </select>
+    </div>
+    <div class="field">
+      <label>Specific question (optional)</label>
+      <textarea id="question" placeholder="e.g. What am I doing wrong in the endgame?"></textarea>
+    </div>
+    <button class="btn-primary" id="analyze-btn" onclick="analyzeGeneral()">Analyse my games</button>
+
+    <!-- Result area: side-by-side feedback + board on desktop -->
+    <div class="gen-result-area" id="gen-result-area">
+      <div class="gen-result-inner">
+        <div class="gen-feedback-col">
+          <div class="result-card">
+            <div class="result-header">
+              <h2 id="result-title">Feedback</h2>
+              <span class="result-badge" id="result-badge"></span>
+            </div>
+            <div id="feedback-content"></div>
+          </div>
         </div>
-        <div class="field">
-          <label>Scope</label>
-          <select id="email-mode">
-            <option value="recent">Most recent</option>
-            <option value="today">Today's games</option>
-          </select>
+        <div class="gen-board-col">
+          <div class="board-card">
+            <div class="board-card-title">Navigate the game while reading ↑</div>
+            <div class="board-outer">
+              <div class="board-with-ranks">
+                <div class="rank-labels" id="gen-rank-labels">
+                  <span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+                </div>
+                <div class="chess-board" id="gen-chess-board"></div>
+              </div>
+              <div class="file-labels" id="gen-file-labels">
+                <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+              </div>
+            </div>
+            <div class="move-nav">
+              <button onclick="genGoStart()">|◄</button>
+              <button onclick="genPrev()">◄</button>
+              <span class="move-label" id="gen-move-label">Start</span>
+              <button onclick="genNext()">►</button>
+              <button onclick="genGoEnd()">►|</button>
+            </div>
+            <div class="move-list-wrap"><div class="move-list" id="gen-move-list"></div></div>
+          </div>
         </div>
       </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn-secondary" id="sub-btn" onclick="subscribe()">Subscribe</button>
-        <button class="btn-secondary" id="unsub-btn" style="display:none" onclick="unsubscribe()">Unsubscribe</button>
+    </div>
+
+    <!-- Email subscription -->
+    <div class="email-section">
+      <div class="email-toggle" onclick="toggleEmail()">
+        <h3>📬 Daily email feedback</h3>
+        <span style="color:#555;font-size:0.8rem">▼</span>
       </div>
-      <p style="font-size:0.72rem;color:#555;font-family:sans-serif;margin-top:8px">Sends at 8am UTC daily.</p>
+      <div class="email-body" id="email-body">
+        <div class="sub-status" id="sub-status"></div>
+        <div class="field" style="margin-top:10px">
+          <label>Your email</label>
+          <input type="email" id="email" placeholder="you@example.com">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Games per email</label>
+            <select id="email-games">
+              <option value="1">1 game</option>
+              <option value="2">2 games</option>
+              <option value="3">3 games</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Scope</label>
+            <select id="email-mode">
+              <option value="recent">Most recent</option>
+              <option value="today">Today's games</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-secondary" id="sub-btn" onclick="subscribe()">Subscribe</button>
+          <button class="btn-secondary" id="unsub-btn" style="display:none" onclick="unsubscribe()">Unsubscribe</button>
+        </div>
+        <p style="font-size:0.72rem;color:#555;font-family:sans-serif;margin-top:8px">Sends at 8am UTC daily.</p>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ GAME REVIEW ═══════════════ -->
+<!-- ══════════════ GAME REVIEW ══════════════ -->
 <div id="panel-review">
   <div class="review-layout">
     <!-- Left: game list -->
@@ -273,13 +325,12 @@
     </div>
 
     <!-- Right: board + analysis -->
-    <div class="board-panel">
+    <div class="game-viewer-area">
       <div class="board-empty" id="board-empty">← Select a game from the list</div>
 
-      <div id="game-viewer" style="display:none">
+      <!-- Board column (left on desktop) -->
+      <div class="board-col-review" id="board-col-review" style="display:none">
         <div class="gv-header" id="gv-header"></div>
-
-        <!-- Chess board -->
         <div class="board-outer" id="review-board-outer">
           <div class="board-with-ranks">
             <div class="rank-labels" id="rank-labels">
@@ -287,30 +338,26 @@
             </div>
             <div class="chess-board" id="chess-board"></div>
           </div>
-          <div class="file-labels">
+          <div class="file-labels" id="file-labels">
             <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
           </div>
         </div>
-
-        <!-- Move navigation -->
         <div class="move-nav">
           <button id="btn-start" onclick="goToStart()">|◄</button>
           <button id="btn-prev" onclick="prevMove()">◄</button>
-          <span id="move-label">Start</span>
+          <span class="move-label" id="move-label">Start</span>
           <button id="btn-next" onclick="nextMove()">►</button>
           <button id="btn-end" onclick="goToEnd()">►|</button>
         </div>
-
-        <!-- Move list -->
         <div class="move-list-wrap"><div class="move-list" id="move-list"></div></div>
+      </div>
 
-        <!-- Analysis buttons -->
+      <!-- Analysis column (right on desktop) -->
+      <div class="analysis-col-review" id="analysis-col-review" style="display:none">
         <div class="analysis-btns">
           <button class="btn-green" id="btn-analyze-pos" onclick="analyzePosition()">Analyse this position</button>
           <button class="btn-secondary" id="btn-analyze-full" onclick="analyzeFullGame()">Full game review</button>
         </div>
-
-        <!-- AI output -->
         <div id="game-analysis"></div>
       </div>
     </div>
@@ -324,22 +371,39 @@ const PIECES = {
   wK:'♔', wQ:'♕', wR:'♖', wB:'♗', wN:'♘', wP:'♙',
   bK:'♚', bQ:'♛', bR:'♜', bB:'♝', bN:'♞', bP:'♟'
 };
+const PIECE_CDN = 'https://chessboardjs.com/img/chesspieces/wikipedia/';
 
 // ── State ──
 let mode = 'general';
 let currentUsername = '';
-let allGames = [];          // from /api/games/<username>
+let allGames = [];
 let selectedGameIdx = -1;
-let positions = [];         // [{fen, san, from, to, label}, ...]
+let positions = [];
 let currentPosIdx = 0;
-// General panel board state
+let boardFlipped = false;
 let genPositions = [];
 let genPosIdx = 0;
+
+// ── Fallback: if CDN piece image fails to load, swap to Unicode ──
+document.addEventListener('error', function(e) {
+  if (e.target.tagName === 'IMG' && e.target.dataset.piece) {
+    const key = e.target.dataset.piece;
+    const isWhite = key[0] === 'w';
+    e.target.outerHTML = `<span class="piece piece-${isWhite?'white':'black'}">${PIECES[key]||''}</span>`;
+  }
+}, true);
 
 // ── Init ──
 window.onload = () => {
   const saved = localStorage.getItem('ct_username');
-  if (saved) { document.getElementById('username').value = saved; currentUsername = saved; }
+  if (saved) {
+    document.getElementById('username').value = saved;
+    currentUsername = saved;
+    showModeTabs();
+    setMode('general');
+  } else {
+    document.getElementById('panel-welcome').style.display = 'block';
+  }
   const savedEmail = localStorage.getItem('ct_email');
   if (savedEmail) document.getElementById('email').value = savedEmail;
   document.getElementById('username').addEventListener('keydown', e => { if (e.key === 'Enter') searchUser(); });
@@ -351,13 +415,18 @@ document.getElementById('count').addEventListener('input', function() {
   document.getElementById('count-val').textContent = this.value;
   document.getElementById('count-badge').textContent = this.value;
 });
-
 document.getElementById('email').addEventListener('input', () => {
   localStorage.setItem('ct_email', document.getElementById('email').value.trim());
   checkSubStatus();
 });
 
-// ── Mode ──
+// ── Show tabs after username is confirmed ──
+function showModeTabs() {
+  document.getElementById('mode-tabs').style.display = 'flex';
+  document.getElementById('panel-welcome').style.display = 'none';
+}
+
+// ── Mode switching ──
 function setMode(m) {
   mode = m;
   document.getElementById('panel-general').style.display = m === 'general' ? 'block' : 'none';
@@ -373,18 +442,24 @@ function searchUser() {
   if (!u) return;
   currentUsername = u;
   localStorage.setItem('ct_username', u);
-  if (mode === 'review') fetchGames(u);
-  else document.getElementById('search-status').textContent = `Username: ${u}`;
+  showModeTabs();
+  document.getElementById('search-status').textContent = `✓ ${u}`;
   checkSubStatus();
+  if (mode === 'review') fetchGames(u);
+  else if (mode !== 'general') setMode('general');
 }
 
 // ── Fetch game list ──
 async function fetchGames(username) {
   document.getElementById('game-list').innerHTML = '<div class="game-list-empty"><span class="spinner"></span> Loading…</div>';
+  allGames = [];
   try {
     const res = await fetch(`/api/games/${encodeURIComponent(username)}`);
     const data = await res.json();
-    if (!res.ok) { document.getElementById('game-list').innerHTML = `<div class="game-list-empty">${data.error}</div>`; return; }
+    if (!res.ok) {
+      document.getElementById('game-list').innerHTML = `<div class="game-list-empty">${data.error}</div>`;
+      return;
+    }
     allGames = data.games;
     renderGameList();
     if (allGames.length > 0) selectGame(0);
@@ -398,10 +473,16 @@ function renderGameList() {
   if (!allGames.length) { el.innerHTML = '<div class="game-list-empty">No games found.</div>'; return; }
   el.innerHTML = allGames.map((g, i) => {
     const rc = g.result === 'Won' ? 'gi-won' : g.result === 'Lost' ? 'gi-lost' : g.result === 'Drew' ? 'gi-drew' : 'gi-other';
+    const avatarHtml = g.opponent_avatar
+      ? `<img src="${g.opponent_avatar}" width="30" height="30" onerror="this.outerHTML='♟'">`
+      : '♟';
     return `<div class="game-item" id="gi-${i}" onclick="selectGame(${i})">
-      <span class="gi-result ${rc}">${g.result}</span>
-      <div class="gi-opponent">vs. ${g.opponent} <span style="color:#666;font-size:0.8em">(${g.opponent_rating})</span></div>
-      <div class="gi-meta">${g.color} · ${g.time_class} · ${g.date}</div>
+      <div class="gi-avatar">${avatarHtml}</div>
+      <div class="gi-info">
+        <span class="gi-result ${rc}">${g.result}</span>
+        <div class="gi-opponent">vs. ${g.opponent} <span style="color:#666;font-size:0.8em">(${g.opponent_rating})</span></div>
+        <div class="gi-meta">${g.color} · ${g.time_class} · ${g.date}</div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -412,10 +493,17 @@ function selectGame(idx) {
   document.querySelectorAll('.game-item').forEach((el, i) => el.classList.toggle('selected', i === idx));
 
   const g = allGames[idx];
+  boardFlipped = g.color === 'Black';
+
   document.getElementById('board-empty').style.display = 'none';
-  document.getElementById('game-viewer').style.display = 'block';
+  document.getElementById('board-col-review').style.display = 'block';
+  document.getElementById('analysis-col-review').style.display = 'block';
+
+  const flipNote = boardFlipped ? ' <span class="flip-badge">Black ▼</span>' : '';
   document.getElementById('gv-header').innerHTML =
-    `<strong>${currentUsername}</strong> (${g.color}) vs <strong>${g.opponent}</strong> (${g.opponent_rating}) · ${g.time_class} · ${g.date}`;
+    `<strong>${currentUsername}</strong> (${g.color}) vs <strong>${g.opponent}</strong> (${g.opponent_rating}) · ${g.time_class} · ${g.date}${flipNote}`;
+
+  updateBoardLabels('rank-labels', 'file-labels', boardFlipped);
 
   positions = parsePGN(g.pgn);
   currentPosIdx = 0;
@@ -424,15 +512,23 @@ function selectGame(idx) {
   document.getElementById('game-analysis').innerHTML = '';
 }
 
-// ── PGN → positions ──
+// ── Update rank/file labels based on orientation ──
+function updateBoardLabels(rankId, fileId, flip) {
+  document.getElementById(rankId).innerHTML = flip
+    ? '<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>'
+    : '<span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>';
+  document.getElementById(fileId).innerHTML = flip
+    ? '<span>h</span><span>g</span><span>f</span><span>e</span><span>d</span><span>c</span><span>b</span><span>a</span>'
+    : '<span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>';
+}
+
+// ── PGN → positions array ──
 function parsePGN(pgn) {
   const game = new Chess();
   try { game.load_pgn(pgn); } catch(e) { return []; }
   const history = game.history({verbose: true});
-
   const replay = new Chess();
   const result = [{fen: replay.fen(), san: null, from: null, to: null, label: 'Start'}];
-
   let moveNum = 1;
   for (let i = 0; i < history.length; i++) {
     const m = history[i];
@@ -445,33 +541,38 @@ function parsePGN(pgn) {
   return result;
 }
 
-// ── Board rendering ──
-function renderBoard(boardEl, fen, fromSq, toSq) {
+// ── Expand a FEN row string to 8 cells ──
+function expandFENRow(row) {
+  const cells = [];
+  for (const ch of row) {
+    if (isNaN(ch)) cells.push(ch);
+    else for (let i = 0; i < parseInt(ch); i++) cells.push('');
+  }
+  return cells;
+}
+
+// ── Board rendering with optional flip (Black perspective) ──
+function renderBoard(boardEl, fen, fromSq, toSq, flip) {
   boardEl.innerHTML = '';
-  const rows = fen.split(' ')[0].split('/');
+  let rows = fen.split(' ')[0].split('/'); // rows[0] = rank 8
+  if (flip) rows = [...rows].reverse();    // rows[0] = rank 1 when flipped
   for (let r = 0; r < 8; r++) {
-    let f = 0;
-    for (const ch of rows[r]) {
-      if (isNaN(ch)) {
-        const rank = 8 - r, file = String.fromCharCode(97 + f);
-        const sq = file + rank;
-        const isLight = (r + f) % 2 === 0;
-        const hl = sq === fromSq ? ' sq-from' : sq === toSq ? ' sq-to' : '';
+    const rankNum = flip ? (r + 1) : (8 - r);
+    let cells = expandFENRow(rows[r]);
+    if (flip) cells = [...cells].reverse();
+    for (let f = 0; f < 8; f++) {
+      const fileChar = flip ? String.fromCharCode(104 - f) : String.fromCharCode(97 + f);
+      const sq = fileChar + rankNum;
+      const isLight = (r + f) % 2 === 0;
+      const hl = sq === fromSq ? ' sq-from' : sq === toSq ? ' sq-to' : '';
+      const ch = cells[f];
+      let inner = '';
+      if (ch) {
         const isUpper = ch === ch.toUpperCase();
-        const sym = PIECES[(isUpper ? 'w' : 'b') + ch.toUpperCase()] || '';
-        boardEl.innerHTML += `<div class="sq ${isLight?'sq-light':'sq-dark'}${hl}"><span class="piece piece-${isUpper?'white':'black'}">${sym}</span></div>`;
-        f++;
-      } else {
-        const count = parseInt(ch);
-        for (let i = 0; i < count; i++) {
-          const rank = 8 - r, file = String.fromCharCode(97 + f);
-          const sq = file + rank;
-          const isLight = (r + f) % 2 === 0;
-          const hl = sq === fromSq ? ' sq-from' : sq === toSq ? ' sq-to' : '';
-          boardEl.innerHTML += `<div class="sq ${isLight?'sq-light':'sq-dark'}${hl}"></div>`;
-          f++;
-        }
+        const key = (isUpper ? 'w' : 'b') + ch.toUpperCase();
+        inner = `<img src="${PIECE_CDN}${key}.png" data-piece="${key}" draggable="false" loading="eager">`;
       }
+      boardEl.innerHTML += `<div class="sq ${isLight?'sq-light':'sq-dark'}${hl}">${inner}</div>`;
     }
   }
 }
@@ -479,61 +580,52 @@ function renderBoard(boardEl, fen, fromSq, toSq) {
 function updateBoard() {
   if (!positions.length) return;
   const pos = positions[currentPosIdx];
-  renderBoard(document.getElementById('chess-board'), pos.fen, pos.from, pos.to);
+  renderBoard(document.getElementById('chess-board'), pos.fen, pos.from, pos.to, boardFlipped);
+  document.getElementById('move-label').textContent = pos.label;
   const total = positions.length - 1;
-  document.getElementById('move-label').textContent = currentPosIdx === 0 ? 'Start' : `Move ${currentPosIdx} / ${total}`;
-  document.getElementById('btn-prev').disabled = currentPosIdx === 0;
+  document.getElementById('btn-prev').disabled  = currentPosIdx === 0;
   document.getElementById('btn-start').disabled = currentPosIdx === 0;
-  document.getElementById('btn-next').disabled = currentPosIdx === total;
-  document.getElementById('btn-end').disabled = currentPosIdx === total;
-  // Highlight active chip
+  document.getElementById('btn-next').disabled  = currentPosIdx === total;
+  document.getElementById('btn-end').disabled   = currentPosIdx === total;
   document.querySelectorAll('#move-list .move-chip').forEach((el, i) => el.classList.toggle('current', i === currentPosIdx));
-  // Scroll active chip into view
   const active = document.querySelector('#move-list .move-chip.current');
   if (active) active.scrollIntoView({block: 'nearest', inline: 'center'});
 }
 
 // ── Move list ──
 function renderMoveList(listId, posArr, activeIdx, onClickFn) {
-  const el = document.getElementById(listId);
-  el.innerHTML = posArr.map((p, i) =>
-    `<span class="move-chip${i === 0 ? ' start-chip' : ''}${i === activeIdx ? ' current' : ''}" onclick="${onClickFn.name}(${i})">${p.label || 'Start'}</span>`
+  document.getElementById(listId).innerHTML = posArr.map((p, i) =>
+    `<span class="move-chip${i===0?' start-chip':''}${i===activeIdx?' current':''}" onclick="${onClickFn.name}(${i})">${p.label||'Start'}</span>`
   ).join('');
 }
 
-function jumpTo(idx) {
-  currentPosIdx = idx;
-  updateBoard();
-}
-
-function prevMove() { if (currentPosIdx > 0) { currentPosIdx--; updateBoard(); } }
-function nextMove() { if (currentPosIdx < positions.length - 1) { currentPosIdx++; updateBoard(); } }
+function jumpTo(idx) { currentPosIdx = idx; updateBoard(); }
+function prevMove()  { if (currentPosIdx > 0) { currentPosIdx--; updateBoard(); } }
+function nextMove()  { if (currentPosIdx < positions.length - 1) { currentPosIdx++; updateBoard(); } }
 function goToStart() { currentPosIdx = 0; updateBoard(); }
-function goToEnd() { currentPosIdx = positions.length - 1; updateBoard(); }
+function goToEnd()   { currentPosIdx = positions.length - 1; updateBoard(); }
 
 function handleKey(e) {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (mode === 'review') {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); prevMove(); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); prevMove(); }
     if (e.key === 'ArrowRight') { e.preventDefault(); nextMove(); }
   } else {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); genPrev(); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); genPrev(); }
     if (e.key === 'ArrowRight') { e.preventDefault(); genNext(); }
   }
 }
 
-// ── Analyze position / full game ──
+// ── Analyse position / full game ──
 async function analyzePosition() {
   if (!positions.length || selectedGameIdx < 0) return;
   const pos = positions[currentPosIdx];
-  const g = allGames[selectedGameIdx];
-  await callAnalyzeGame(g.pgn, currentUsername, currentPosIdx, pos.fen);
+  await callAnalyzeGame(allGames[selectedGameIdx].pgn, currentUsername, currentPosIdx, pos.fen);
 }
 
 async function analyzeFullGame() {
   if (selectedGameIdx < 0) return;
-  const g = allGames[selectedGameIdx];
-  await callAnalyzeGame(g.pgn, currentUsername, null, '');
+  await callAnalyzeGame(allGames[selectedGameIdx].pgn, currentUsername, null, '');
 }
 
 async function callAnalyzeGame(pgn, username, moveNumber, fen) {
@@ -541,7 +633,6 @@ async function callAnalyzeGame(pgn, username, moveNumber, fen) {
   el.innerHTML = '<div class="ai-block"><span class="spinner"></span> Analysing…</div>';
   document.getElementById('btn-analyze-pos').disabled = true;
   document.getElementById('btn-analyze-full').disabled = true;
-
   try {
     const res = await fetch('/api/analyze-game', {
       method: 'POST',
@@ -565,18 +656,22 @@ async function analyzeGeneral() {
   if (!username) { showToast('Enter your Chess.com username', true); return; }
   currentUsername = username;
   localStorage.setItem('ct_username', username);
+  showModeTabs();
 
   const btn = document.getElementById('analyze-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Fetching games…';
-  document.getElementById('result-card').style.display = 'none';
-  document.getElementById('general-board-section').style.display = 'none';
+  document.getElementById('gen-result-area').style.display = 'none';
 
   try {
     const res = await fetch('/api/analyze', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({username, count: parseInt(document.getElementById('count').value), question: document.getElementById('question').value.trim()}),
+      body: JSON.stringify({
+        username,
+        count: parseInt(document.getElementById('count').value),
+        question: document.getElementById('question').value.trim(),
+      }),
     });
     btn.innerHTML = '<span class="spinner"></span>Analysing…';
     const data = await res.json();
@@ -585,15 +680,15 @@ async function analyzeGeneral() {
     document.getElementById('result-title').textContent = `Feedback for ${data.username}`;
     document.getElementById('result-badge').textContent = `${data.games_analyzed} game${data.games_analyzed > 1 ? 's' : ''} reviewed`;
     document.getElementById('feedback-content').innerHTML = marked.parse(data.feedback);
-    document.getElementById('result-card').style.display = 'block';
+    document.getElementById('gen-result-area').style.display = 'block';
 
-    // Load board for first game
     if (data.first_pgn) {
       genPositions = parsePGN(data.first_pgn);
       genPosIdx = 0;
-      setupGenBoard();
+      updateGenBoard();
+      renderMoveList('gen-move-list', genPositions, genPosIdx, genJumpTo);
     }
-    document.getElementById('result-card').scrollIntoView({behavior: 'smooth', block: 'start'});
+    document.getElementById('gen-result-area').scrollIntoView({behavior: 'smooth', block: 'start'});
   } catch(e) {
     showToast('Network error', true);
   } finally {
@@ -602,72 +697,50 @@ async function analyzeGeneral() {
   }
 }
 
-function setupGenBoard() {
-  if (!genPositions.length) return;
-  const section = document.getElementById('general-board-section');
-  section.style.display = 'block';
-
-  // Create or reuse board element
-  let outer = document.getElementById('gen-board-outer');
-  if (!outer) {
-    outer = document.createElement('div');
-    outer.id = 'gen-board-outer';
-    outer.className = 'board-outer';
-    outer.innerHTML = `
-      <div class="board-with-ranks">
-        <div class="rank-labels"><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
-        <div class="chess-board" id="gen-chess-board"></div>
-      </div>
-      <div class="file-labels"><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span></div>`;
-    document.getElementById('general-board-outer').appendChild(outer);
-  }
-  updateGenBoard();
-  renderMoveList('gen-move-list', genPositions, genPosIdx, genJumpTo);
-}
-
 function updateGenBoard() {
   const boardEl = document.getElementById('gen-chess-board');
   if (!boardEl || !genPositions.length) return;
   const pos = genPositions[genPosIdx];
-  renderBoard(boardEl, pos.fen, pos.from, pos.to);
-  const total = genPositions.length - 1;
-  document.getElementById('gen-move-label').textContent = genPosIdx === 0 ? 'Start' : `Move ${genPosIdx} / ${total}`;
+  renderBoard(boardEl, pos.fen, pos.from, pos.to, false); // general view always white-up
+  document.getElementById('gen-move-label').textContent = pos.label;
   document.querySelectorAll('#gen-move-list .move-chip').forEach((el, i) => el.classList.toggle('current', i === genPosIdx));
+  const active = document.querySelector('#gen-move-list .move-chip.current');
+  if (active) active.scrollIntoView({block: 'nearest', inline: 'center'});
 }
 
 function genJumpTo(idx) { genPosIdx = idx; updateGenBoard(); }
-function genPrev() { if (genPosIdx > 0) { genPosIdx--; updateGenBoard(); } }
-function genNext() { if (genPosIdx < genPositions.length - 1) { genPosIdx++; updateGenBoard(); } }
-function genGoStart() { genPosIdx = 0; updateGenBoard(); }
-function genGoEnd() { genPosIdx = genPositions.length - 1; updateGenBoard(); }
+function genPrev()      { if (genPosIdx > 0) { genPosIdx--; updateGenBoard(); } }
+function genNext()      { if (genPosIdx < genPositions.length - 1) { genPosIdx++; updateGenBoard(); } }
+function genGoStart()   { genPosIdx = 0; updateGenBoard(); }
+function genGoEnd()     { genPosIdx = genPositions.length - 1; updateGenBoard(); }
 
 // ── Email ──
-function toggleEmail() {
-  document.getElementById('email-body').classList.toggle('open');
-}
+function toggleEmail() { document.getElementById('email-body').classList.toggle('open'); }
 
 function checkSubStatus() {
   const u = document.getElementById('username').value.trim();
   const e = document.getElementById('email').value.trim();
   const status = document.getElementById('sub-status');
-  const subBtn = document.getElementById('sub-btn');
-  const unsubBtn = document.getElementById('unsub-btn');
   if (u && e && localStorage.getItem(`ct_sub_${u}_${e}`)) {
     status.textContent = `✓ Subscribed — daily feedback to ${e}`;
     status.classList.add('show');
-    subBtn.style.display = 'none'; unsubBtn.style.display = '';
+    document.getElementById('sub-btn').style.display = 'none';
+    document.getElementById('unsub-btn').style.display = '';
   } else {
     status.classList.remove('show');
-    subBtn.style.display = ''; unsubBtn.style.display = 'none';
+    document.getElementById('sub-btn').style.display = '';
+    document.getElementById('unsub-btn').style.display = 'none';
   }
 }
 
 async function subscribe() {
   const username = document.getElementById('username').value.trim();
-  const email = document.getElementById('email').value.trim();
+  const email    = document.getElementById('email').value.trim();
   if (!username || !email) { showToast('Enter username and email', true); return; }
-  const res = await fetch('/api/subscribe', {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({username, email, games: parseInt(document.getElementById('email-games').value), mode: document.getElementById('email-mode').value})});
+  const res = await fetch('/api/subscribe', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username, email, games: parseInt(document.getElementById('email-games').value), mode: document.getElementById('email-mode').value}),
+  });
   const data = await res.json();
   if (res.ok) { localStorage.setItem(`ct_sub_${username}_${email}`, '1'); checkSubStatus(); showToast(data.message); }
   else showToast(data.error || 'Error', true);
@@ -675,16 +748,25 @@ async function subscribe() {
 
 async function unsubscribe() {
   const username = document.getElementById('username').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const res = await fetch('/api/unsubscribe', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, email})});
-  if ((await res.json()).success) { localStorage.removeItem(`ct_sub_${username}_${email}`); checkSubStatus(); showToast('Unsubscribed'); }
+  const email    = document.getElementById('email').value.trim();
+  const res = await fetch('/api/unsubscribe', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username, email}),
+  });
+  if ((await res.json()).success) {
+    localStorage.removeItem(`ct_sub_${username}_${email}`);
+    checkSubStatus();
+    showToast('Unsubscribed');
+  }
 }
 
 // ── Toast ──
 function showToast(msg, isError=false) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = isError ? 'error' : '';
-  t.offsetHeight; t.classList.add('show');
+  t.textContent = msg;
+  t.className = isError ? 'error' : '';
+  t.offsetHeight; // force reflow
+  t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 </script>

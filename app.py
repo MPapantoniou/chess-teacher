@@ -15,9 +15,10 @@ app = Flask(__name__)
 CORS(app)
 
 OWNER_USERNAME = "zingpap"
-FREE_MONTHLY_LIMIT = 3
 # Monthly API budget in USD (£1 ≈ $1.27)
 MONTHLY_BUDGET_USD = float(os.environ.get("MONTHLY_BUDGET_USD", "1.27"))
+# Per-user monthly cap in USD (10p ≈ $0.127)
+USER_MONTHLY_BUDGET_USD = float(os.environ.get("USER_MONTHLY_BUDGET_USD", "0.127"))
 ADMIN_KEY = os.environ.get("ADMIN_KEY", "changeme")
 
 
@@ -69,6 +70,15 @@ def get_monthly_usage_count(username: str) -> int:
     return row["n"] if row else 0
 
 
+def get_user_monthly_spend(username: str) -> float:
+    with get_db() as db:
+        row = db.execute(
+            "SELECT SUM(cost_usd) as total FROM usage_log WHERE username=? AND created_at>=?",
+            (username, get_month_start()),
+        ).fetchone()
+    return row["total"] or 0.0
+
+
 def get_monthly_spend_usd() -> float:
     with get_db() as db:
         row = db.execute(
@@ -114,13 +124,12 @@ def analyze():
 
     # Per-user monthly cap (owner is exempt)
     if username != OWNER_USERNAME.lower():
-        usage_count = get_monthly_usage_count(username)
-        if usage_count >= FREE_MONTHLY_LIMIT:
+        user_spend = get_user_monthly_spend(username)
+        if user_spend >= USER_MONTHLY_BUDGET_USD:
+            spent_p = round(user_spend * 100 / 1.27, 1)
             return jsonify({
-                "error": f"You've used all {FREE_MONTHLY_LIMIT} free analyses for this month. Come back next month!",
+                "error": f"You've used your 10p monthly allowance ({spent_p}p used). Come back next month!",
                 "limit_type": "user",
-                "used": usage_count,
-                "limit": FREE_MONTHLY_LIMIT,
             }), 429
 
     try:
@@ -225,6 +234,7 @@ def list_games(username):
             "opponent": opponent.get("username", "?"),
             "opponent_rating": opponent.get("rating", "?"),
             "result": result_map.get(player.get("result", ""), "?"),
+            "opponent_avatar": opponent.get("avatar", ""),
             "date": dt.fromtimestamp(ts).strftime("%d %b %Y") if ts else "",
         })
     return jsonify({"games": items, "username": username})
@@ -246,8 +256,10 @@ def analyze_game_route():
         return jsonify({"error": "Monthly budget reached. Try again next month."}), 429
 
     if username != OWNER_USERNAME.lower():
-        if get_monthly_usage_count(username) >= FREE_MONTHLY_LIMIT:
-            return jsonify({"error": f"{FREE_MONTHLY_LIMIT} free analyses used this month."}), 429
+        user_spend = get_user_monthly_spend(username)
+        if user_spend >= USER_MONTHLY_BUDGET_USD:
+            spent_p = round(user_spend * 100 / 1.27, 1)
+            return jsonify({"error": f"You've used your 10p monthly allowance ({spent_p}p used). Come back next month."}), 429
 
     feedback, tok_in, tok_out, cost = analyze_single_game(pgn, username, move_number, fen)
     log_usage(username, ip, 1, f"game_review:{move_number}", tok_in, tok_out, cost)
